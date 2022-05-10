@@ -1,17 +1,17 @@
 import {Card, Form , Button, Alert } from 'react-bootstrap'
 import { useRef,useState } from 'react'; 
 import { useAuth } from '../context/AuthContext';
-import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
-import { Link } from 'react-router-dom';
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { Link,Navigate,useNavigate } from 'react-router-dom';
 
-const Signup = () => {
+const Login = () => {
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
-    const [passwordConf,setPasswordConf] = useState('');
     const { signUp } = useAuth();
     const [error,setError] = useState('');
     const [loading,setLoading] = useState(false);
     const [user,setUser] = useState(null)
+    const Navigate = useNavigate();
 
     const handleEmailChange = e => {
         setEmail(e.target.value);
@@ -21,34 +21,22 @@ const Signup = () => {
         setPassword(e.target.value);
     }
 
-    const handlePasswordConfChange = e => {
-        setPasswordConf(e.target.value);
-    }
-
     const handleSubmit = e => {
         e.preventDefault();
         const auth = getAuth();
-        if(password !== passwordConf){
-            setError('Passwords do not match');
-            return;
-        }
-        if(email && password && passwordConf){
-           setLoading(true);
-            createUserWithEmailAndPassword(auth,email,password)
-                .then (cred => {
-                    setUser(cred.user.email)
-                })
-                .catch(err => console.log(err.message))
-        }
-        setLoading(false);
-        setError('')
+        signInWithEmailAndPassword(auth,email,password)
+            .then(cred => {
+                console.log(cred.user);
+                Navigate('/');
+            })
+            .catch(err => console.log(err.message))
     }
     
     return (
         <>
             <Card>
                 <Card.Body>
-                    <h2 className='text-center mb-2'>Sign Up</h2>
+                    <h2 className='text-center mb-2'>Log In</h2>
                     <Form  onSubmit={handleSubmit}>
                         {error && <Alert variant='danger'>{error}</Alert>}
                         {user}
@@ -70,24 +58,15 @@ const Signup = () => {
                             required
                             />
                         </Form.Group>
-                        <Form.Group id='password-confirm'>
-                            <Form.Label>Password Confirmation</Form.Label>
-                            <Form.Control
-                            type='password'
-                            value={passwordConf}
-                            onChange={handlePasswordConfChange}
-                            required
-                            />
-                        </Form.Group>
-                        <Button type='submit' disabled={loading} className='w-100 mt-2'>Sign Up</Button>
+                        <Button type='submit' disabled={loading} className='w-100 mt-2'>Login</Button>
                     </Form>
                 </Card.Body>
             </Card>
             <div className='w-100 text-center mt-2'>
-                Already have an account ? <Link to='/login'>Log in</Link> 
+                Don't have an account ? <Link to='/signup'>Sign Up</Link> 
             </div>
         </>
     );
 }
  
-export default Signup;
+export default Login;
