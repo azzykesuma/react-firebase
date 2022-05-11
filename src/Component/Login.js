@@ -10,7 +10,6 @@ const Login = () => {
     const { signUp } = useAuth();
     const [error,setError] = useState('');
     const [loading,setLoading] = useState(false);
-    const [user,setUser] = useState(null)
     const Navigate = useNavigate();
 
     const handleEmailChange = e => {
@@ -26,7 +25,7 @@ const Login = () => {
         const auth = getAuth();
         signInWithEmailAndPassword(auth,email,password)
             .then(cred => {
-                console.log(cred.user);
+                const user = cred.user.email
                 Navigate('/');
             })
             .catch(err => console.log(err.message))
@@ -39,7 +38,6 @@ const Login = () => {
                     <h2 className='text-center mb-2'>Log In</h2>
                     <Form  onSubmit={handleSubmit}>
                         {error && <Alert variant='danger'>{error}</Alert>}
-                        {user}
                         <Form.Group id='email'>
                             <Form.Label>Email</Form.Label>
                             <Form.Control 

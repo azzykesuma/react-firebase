@@ -18,6 +18,7 @@ export const AuthProvider = ({children}) => {
         createUserWithEmailAndPassword(auth,email,password)
             .then((cred) => {
                 console.log(cred.user);
+                setUser(cred.user);
             })
     }
 
