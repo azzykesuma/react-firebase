@@ -1,16 +1,18 @@
 import Signup from "./Signup";
-import { useState } from "react";
 import { Container } from 'react-bootstrap'
 import { AuthProvider } from "../context/AuthContext";
 import {BrowserRouter,Routes,Route,Navigate} from 'react-router-dom';
 import Dashboard from "./Dashboard";
 import Login from "./Login";
-import PrivateRoute from "./PrivateRoute";
-import { useAuth } from "../context/AuthContext";
-import ProtectedPage from "./PrivateRoute";
+import { getAuth } from "firebase/auth";
+import ForgotPassword from "./ForgotPassword";
+import UpdateProfile from "./UpdateProfile";
+
+
 
 function App() {
-  const [currentUser,setCurrentUser] = useState(null);
+  const auth = getAuth();
+  const user = auth.currentUser;
   return (
       <Container className="d-flex justify-content-center align-items-center"
       style={{
@@ -26,10 +28,10 @@ function App() {
             <AuthProvider>
               <Routes>
                 <Route exact path='/' element={<Dashboard/>}/>
-                <Route element={<ProtectedPage />}>
-                  <Route path='/signup' element={<Signup />} />
-                  <Route path='login' element={<Login />} />
-                </Route>
+                <Route path='/signup' element={<Signup />} />
+                <Route path='login' element={<Login />} />
+                <Route path='forgot-password' element={<ForgotPassword />} />
+                <Route path='update-profile' element={<UpdateProfile />} />
               </Routes>
             </AuthProvider>
           </BrowserRouter>
